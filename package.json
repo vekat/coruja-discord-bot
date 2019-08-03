@@ -1,0 +1,27 @@
+{
+  "name": "coruja-discord-bot",
+  "version": "0.0.1",
+  "description": "A simple Discord bot",
+  "main": "index.js",
+  "scripts": {
+    "start": "nf start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vekat/coruja-discord-bot.git"
+  },
+  "keywords": [
+    "discord",
+    "bot"
+  ],
+  "author": "Vitor Cortez <vitor.a.cortez@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vekat/coruja-discord-bot/issues"
+  },
+  "homepage": "https://github.com/vekat/coruja-discord-bot#readme",
+  "dependencies": {
+    "discord.js": "^11.5.1",
+    "foreman": "^3.0.1"
+  }
+}

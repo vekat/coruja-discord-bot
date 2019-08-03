@@ -1,0 +1,13 @@
+{
+  "menus": [
+    {
+      "channel": "insert-channel-id-here",
+      "message": "insert-message-id-here",
+      "roles": {
+        "A": "🇦",
+        "B": "🇧",
+        "C": "🇨"
+      }
+    }
+  ]
+}
