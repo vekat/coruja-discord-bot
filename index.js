@@ -26,8 +26,14 @@ client.login(client.config.token)
         const emojis = Object.values(menu.roles)
 
         channel.fetchMessage(menu.message)
-          .then((message) => {
-            Promise.all(emojis.map((v) => message.react(v))).catch(() => console.error('a reaction failed'))
+          .then(async (message) => {
+            try {
+              for (const emoji of emojis) {
+                await message.react(emoji)
+              }
+            } catch (err) {
+              console.error('a reaction failed')
+            }
 
             const filter = (r, user) => {
               if (emojis.includes(r.emoji.name) && !user.bot) {
