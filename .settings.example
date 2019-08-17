@@ -9,5 +9,8 @@
         "C": "🇨"
       }
     }
-  ]
+  ],
+  "logs": {
+    "messages": "insert-channel-id-here"
+  }
 }
