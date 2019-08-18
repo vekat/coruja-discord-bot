@@ -79,7 +79,7 @@ async function setupRoleMenus({ client, log, settings }) {
               log('collect', `${user} reacted with emoji ${emoji}`)
 
               if (guild.available) {
-                const member = guild.members.get(user)
+                const member = guild.members.get(r.user.id)
 
                 if (!member) return
 
