@@ -1,13 +1,13 @@
 const { RichEmbed } = require('discord.js')
 
 const { chain } = require('../utils/chain')
-const { ignoreArtificial } = require('../utils/helpers')
+const { ignoreArtificial, ensureWhitelist } = require('../utils/helpers')
 const { getBaseCtx } = require('../utils/contexts')
 
 exports.run = async (client, oldMessage, message) => {
   const ctx = getBaseCtx(client, this.meta, { oldMessage, message })
 
-  return chain(ignoreArtificial, ignoreUnchanged, logMessage)(ctx)
+  return chain(ensureWhitelist, ignoreArtificial, ignoreUnchanged, logMessage)(ctx)
     .then(ctx.onSuccess)
     .catch(ctx.onError)
 }
@@ -16,13 +16,7 @@ async function ignoreUnchanged({ oldMessage: o, message: m }, next) {
   return (o.cleanContent === m.cleanContent) ? 'unchanged content' : next()
 }
 
-async function logMessage({ client, settings, oldMessage: old, message: msg }) {
-  if (settings.whitelist) {
-    if (!settings.whitelist.some((v) => v === msg.channel.id)) {
-      return
-    }
-  }
-
+async function logMessage({ client, oldMessage: old, message: msg }) {
   const embed = new RichEmbed()
     .setDescription(
       `**message edited in ${msg.channel}**

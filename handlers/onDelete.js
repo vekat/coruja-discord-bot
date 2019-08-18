@@ -1,24 +1,18 @@
 const { RichEmbed } = require('discord.js')
 
 const { chain } = require('../utils/chain')
-const { ignoreArtificial } = require('../utils/helpers')
+const { ignoreArtificial, ensureWhitelist } = require('../utils/helpers')
 const { getBaseCtx } = require('../utils/contexts')
 
 exports.run = async (client, message) => {
   const ctx = getBaseCtx(client, this.meta, { message })
 
-  return chain(ignoreArtificial, logMessage)(ctx)
+  return chain(ensureWhitelist, ignoreArtificial, logMessage)(ctx)
     .then(ctx.onSuccess)
     .catch(ctx.onError)
 }
 
-async function logMessage({ client, settings, message: msg }) {
-  if (settings.whitelist) {
-    if (!settings.whitelist.some((v) => v === msg.channel.id)) {
-      return
-    }
-  }
-
+async function logMessage({ client, message: msg }) {
   const embed = new RichEmbed()
     .setDescription(
       `**message from ${msg.author} deleted in ${msg.channel}**
