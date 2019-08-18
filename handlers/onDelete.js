@@ -1,21 +1,18 @@
 const { RichEmbed } = require('discord.js')
 
 const { chain } = require('../utils/chain')
+const { ignoreArtificial } = require('../utils/helpers')
 const { getBaseCtx } = require('../utils/contexts')
 
 exports.run = async (client, message) => {
   const ctx = getBaseCtx(client, this.meta, { message })
 
-  return chain(logMessage)(ctx)
+  return chain(ignoreArtificial, logMessage)(ctx)
     .then(ctx.onSuccess)
     .catch(ctx.onError)
 }
 
 async function logMessage({ client, settings, message: msg }) {
-  if (msg.type !== 'DEFAULT' || msg.author.bot) {
-    return
-  }
-
   if (settings.whitelist) {
     if (!settings.whitelist.some((v) => v === msg.channel.id)) {
       return
