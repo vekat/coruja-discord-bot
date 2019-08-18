@@ -1,8 +1,9 @@
 {
+  "prefix": "OwO",
   "menus": [
     {
-      "channel": "insert-channel-id-here",
-      "message": "insert-message-id-here",
+      "channel": "roles-menu",
+      "message": "012345678910111213",
       "roles": {
         "A": "🇦",
         "B": "🇧",
@@ -11,6 +12,6 @@
     }
   ],
   "logs": {
-    "messages": "insert-channel-id-here"
+    "messages": "mod-logs"
   }
 }
