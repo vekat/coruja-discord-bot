@@ -5,10 +5,15 @@ const baseCtx = {
     console.log(`[${this.meta.event}] :: ${msgs.join(' :: ')}`)
   },
   onSuccess(...extras) {
-    this.log('resolved', ...extras)
+    extras = extras.filter((v) => v !== undefined)
+    if (extras.length) {
+      this.log('resolved', ...extras)
+    } else {
+      this.log('resolved', 'OK')
+    }
   },
   onError(err) {
-    this.log(err.message || err.toString())
+    this.log('rejected', err)
   }
 }
 
