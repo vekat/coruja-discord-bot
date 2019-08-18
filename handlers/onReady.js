@@ -20,7 +20,7 @@ async function setupActivity({ client: { user }, log }, next) {
   log(`ready as ${user.tag}`, '🦉')
 }
 
-async function fetchChannels({ client, settings, guild, log }, next) {
+async function fetchChannels({ client, settings, guild }, next) {
   if (settings.logs) {
     for (const key in settings.logs) {
       const id_name = settings.logs[key]
@@ -41,9 +41,7 @@ async function fetchChannels({ client, settings, guild, log }, next) {
   next()
 }
 
-async function setupRoleMenus({ client, log, settings }) {
-  const guild = client.guilds.get(client.config.guildId)
-
+async function setupRoleMenus({ log, settings, guild }) {
   if (guild.available) {
     log(`setting up role menu for ${guild.name}`)
 
