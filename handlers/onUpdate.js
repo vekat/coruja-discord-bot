@@ -12,8 +12,8 @@ exports.run = async (client, oldMessage, message) => {
     .catch(ctx.onError)
 }
 
-async function ignoreUnchanged({ oldMessage: o, message: m }, next) {
-  return (o.cleanContent === m.cleanContent) ? 'unchanged content' : next()
+async function ignoreUnchanged({ oldMessage: o, message: m, filter }, next) {
+  return (o.cleanContent === m.cleanContent) ? filter('unchanged content') : next()
 }
 
 async function logMessage({ client, oldMessage: old, message: msg }) {

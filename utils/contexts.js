@@ -1,8 +1,12 @@
 const { getSettings } = require('./settings')
+const { FilterException } = require('./errors')
 
 const baseCtx = {
   log(...msgs) {
     console.log(`[${this.meta.event}] :: ${msgs.join(' :: ')}`)
+  },
+  filter(...params) {
+    throw new FilterException(...params)
   },
   onSuccess(...extras) {
     extras = extras.filter((v) => v !== undefined)
