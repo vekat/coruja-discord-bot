@@ -15,8 +15,7 @@ exports.run = async (client, message) => {
 async function logMessage({ client, message: msg }) {
   const embed = new RichEmbed()
     .setDescription(
-      `**message from ${msg.author} deleted in ${msg.channel}**
-      >>> ${msg.cleanContent}`
+      `**message from ${msg.author} deleted in ${msg.channel}**\n>>> ${msg.cleanContent}`
     )
     .setAuthor(`${msg.author.tag} • ${msg.author.id}`, msg.author.displayAvatarURL)
     .setFooter(`• ID: ${msg.id}`)

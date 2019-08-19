@@ -19,8 +19,7 @@ async function ignoreUnchanged({ oldMessage: o, message: m }, next) {
 async function logMessage({ client, oldMessage: old, message: msg }) {
   const embed = new RichEmbed()
     .setDescription(
-      `**message edited in ${msg.channel}**
-      [message link](${msg.url})`
+      `**message from ${msg.author} edited in ${msg.channel}**\n[jump to message](${msg.url})`
     )
     .setAuthor(`${msg.author.tag} • ${msg.author.id}`, msg.author.displayAvatarURL)
     .addField('before', `>>> ${old.cleanContent}`)
