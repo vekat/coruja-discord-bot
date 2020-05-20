@@ -17,6 +17,7 @@ async function ignoreUnchanged({ oldMessage: o, message: m, filter }, next) {
 }
 
 async function logMessage({ client, oldMessage: old, message: msg }) {
+  if (client.config.logs['messages']) {
   const embed = new RichEmbed()
     .setDescription(
       `**message from ${msg.author} edited in ${msg.channel}**\n[jump to message](${msg.url})`
@@ -28,7 +29,6 @@ async function logMessage({ client, oldMessage: old, message: msg }) {
     .setColor(255)
     .setTimestamp()
 
-  if (client.config.logs['messages']) {
     client.config.logs.messages.send(embed)
   }
 }

@@ -1,10 +1,11 @@
+const { WebhookClient } = require ('discord.js')
 const { chain } = require('../utils/chain')
 const { getBaseCtx } = require('../utils/contexts')
 
 exports.run = async (client) => {
   const ctx = getBaseCtx(client, this.meta)
 
-  return chain(setupActivity, fetchChannels, setupRoleMenus)(ctx)
+  return chain(setupActivity, fetchWebhooks, setupRoleMenus)(ctx)
     .then(ctx.onSuccess)
     .catch(ctx.onError)
 }
@@ -20,21 +21,20 @@ async function setupActivity({ client: { user }, log }, next) {
   log(`ready as ${user.tag}`, '🦉')
 }
 
-async function fetchChannels({ client, settings, guild }, next) {
+async function fetchWebhooks({ client, settings, guild }, next) {
   if (settings.logs) {
     for (const key in settings.logs) {
-      const id_name = settings.logs[key]
+      const json = settings.logs[key]
 
       if (!client.config.logs) {
         client.config.logs = {}
       }
 
-      if (guild.channels.has(id_name)) {
-        client.config.logs[key] = guild.channels.get(id_name)
-        continue
-      }
+      const guildHooks = await guild.fetchWebhooks()
 
-      client.config.logs[key] = guild.channels.find((c) => c.name === id_name) || undefined
+      const hook = guildHooks.get(json.id)
+
+      client.config.logs[key] = hook || undefined
     }
   }
 

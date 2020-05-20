@@ -23,14 +23,15 @@ async function logMessage({ client, message: msg }) {
       .setColor(16711680)
       .setTimestamp()
 
-    const opts = { embed }
+    const embeds = [embed]
     if (msg.attachments.size > 0) {
       msg.attachments.tap((v, _) => {
-        embed.addField(`attachment: *${v.filename}*`, `${v.proxyURL}`)
+        // embed.addField(`attachment: *${v.filename}*`, `${v.proxyURL}`)
+        embeds.push(new RichEmbed().setTitle(v.filename).attachFile(v.proxyURL))
       })
     }
 
-    client.config.logs.messages.send(opts)
+    client.config.logs.messages.send({ embeds })
   }
 }
 
