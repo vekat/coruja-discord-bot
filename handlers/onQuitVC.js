@@ -22,8 +22,8 @@ async function delay(_, next) {
   return next()
 }
 
-async function isDisconnected({ newState: n, filter }, next) {
-  if (!n.channel) {
+async function isDisconnected({ newState: n, settings, filter }, next) {
+  if (!n.channel || (settings.voiceWhitelist && n.channel && !settings.voiceWhitelist.includes(n.channel.parentID))) {
     return next()
   }
   filter('not disconnected')
