@@ -13,7 +13,7 @@ exports.run = async (client, oldState, newState) => {
     .catch(ctx.onError)
 }
 
-async function checkQuit({ oldState: o, newState: n, filter }, next) {
+async function checkQuit({ oldState: o, newState: n, settings, filter }, next) {
   return (!o.channel || (settings.voiceWhitelist && n.channel && settings.voiceWhitelist.includes(n.channel.parentID))) ? filter('not quitting') : next()
 }
 
