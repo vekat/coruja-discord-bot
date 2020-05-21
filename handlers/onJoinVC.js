@@ -8,20 +8,13 @@ exports.meta = {
 exports.run = async (client, oldState, newState) => {
   const ctx = getBaseCtx(client, this.meta, { oldState, newState })
 
-  return chain(checkJoin, delay, isConnected, verifyCategory, assignRole)(ctx)
+  return chain(checkJoin, delay, isConnected, assignRole)(ctx)
     .then(ctx.onSuccess)
     .catch(ctx.onError)
 }
 
-async function checkJoin({ oldState: o, filter }, next) {
-  return (o.channel) ? filter('not joining') : next()
-}
-
-async function verifyCategory({ newState: n, settings, filter }, next) {
-  if (settings.voiceWhitelist && settings.voiceWhitelist.includes(n.channel.parentID)) {
-    return next()
-  }
-  filter('non-whitelist category')
+async function checkJoin({ newState: n, settings, filter }, next) {
+  return (settings.voiceWhitelist && n.channel && settings.voiceWhitelist.includes(n.channel.parentID)) ? next() : filter('not joining')
 }
 
 async function delay(_, next) {
