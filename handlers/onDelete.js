@@ -18,16 +18,15 @@ async function logMessage({ client, message: msg }) {
       .setDescription(
         `**message from ${msg.author} deleted in ${msg.channel}**\n>>> ${msg.cleanContent || "NO TEXT"}`
       )
-      .setAuthor(`${msg.author.tag} • ${msg.author.id}`, msg.author.displayAvatarURL)
+      .setAuthor(`${msg.author.tag} • ${msg.author.id}`, msg.author.displayAvatarURL())
       .setFooter(`• ID: ${msg.id}`)
       .setColor(16711680)
       .setTimestamp()
 
     const embeds = [embed]
     if (msg.attachments.size > 0) {
-      msg.attachments.tap((v, _) => {
-        // embed.addField(`attachment: *${v.filename}*`, `${v.proxyURL}`)
-        embeds.push(new MessageEmbed().setTitle(v.filename).attachFiles([v.proxyURL]))
+      msg.attachments.each((v) => {
+        embeds.push(new MessageEmbed().setTitle('attachment').setDescription(v.name).attachFiles(v.proxyURL))
       })
     }
 
