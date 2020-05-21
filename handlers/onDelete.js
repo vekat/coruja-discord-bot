@@ -1,4 +1,4 @@
-const { RichEmbed, Attachment } = require('discord.js')
+const { MessageEmbed, Attachment } = require('discord.js')
 
 const { chain } = require('../utils/chain')
 const { ignoreArtificial, ensureWhitelist } = require('../utils/helpers')
@@ -14,7 +14,7 @@ exports.run = async (client, message) => {
 
 async function logMessage({ client, message: msg }) {
   if (client.config.logs['messages']) {
-    const embed = new RichEmbed()
+    const embed = new MessageEmbed()
       .setDescription(
         `**message from ${msg.author} deleted in ${msg.channel}**\n>>> ${msg.cleanContent || "NO TEXT"}`
       )
@@ -27,7 +27,7 @@ async function logMessage({ client, message: msg }) {
     if (msg.attachments.size > 0) {
       msg.attachments.tap((v, _) => {
         // embed.addField(`attachment: *${v.filename}*`, `${v.proxyURL}`)
-        embeds.push(new RichEmbed().setTitle(v.filename).attachFile(v.proxyURL))
+        embeds.push(new MessageEmbed().setTitle(v.filename).attachFiles([v.proxyURL]))
       })
     }
 

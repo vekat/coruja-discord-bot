@@ -1,4 +1,4 @@
-const { RichEmbed } = require('discord.js')
+const { MessageEmbed } = require('discord.js')
 
 const { chain } = require('../utils/chain')
 const { ignoreArtificial, ensureWhitelist } = require('../utils/helpers')
@@ -18,7 +18,7 @@ async function ignoreUnchanged({ oldMessage: o, message: m, filter }, next) {
 
 async function logMessage({ client, oldMessage: old, message: msg }) {
   if (client.config.logs['messages']) {
-  const embed = new RichEmbed()
+  const embed = new MessageEmbed()
     .setDescription(
       `**message from ${msg.author} edited in ${msg.channel}**\n[jump to message](${msg.url})`
     )
