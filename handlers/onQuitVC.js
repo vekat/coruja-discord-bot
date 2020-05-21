@@ -14,7 +14,7 @@ exports.run = async (client, oldState, newState) => {
 }
 
 async function checkQuit({ oldState: o, newState: n, filter }, next) {
-  return (!o.channel || n.channel) ? filter('not quitting') : next()
+  return (!o.channel || (settings.voiceWhitelist && n.channel && settings.voiceWhitelist.includes(n.channel.parentID))) ? filter('not quitting') : next()
 }
 
 async function delay(_, next) {
