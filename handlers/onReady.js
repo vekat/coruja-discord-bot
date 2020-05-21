@@ -1,4 +1,3 @@
-const { WebhookClient } = require ('discord.js')
 const { chain } = require('../utils/chain')
 const { getBaseCtx } = require('../utils/contexts')
 
@@ -47,11 +46,11 @@ async function setupRoleMenus({ log, settings, guild }) {
 
     if (settings.menus) {
       for (const menu of settings.menus) {
-        const channel = guild.channels.get(menu.channel)
+        const channel = guild.channels.cache.get(menu.channel)
         const roles = Object.keys(menu.roles)
         const emojis = Object.values(menu.roles)
 
-        channel.fetchMessage(menu.message)
+        channel.messages.fetch(menu.message)
           .then(async (message) => {
             try {
               for (const emoji of emojis) {
@@ -77,17 +76,17 @@ async function setupRoleMenus({ log, settings, guild }) {
               log('collect', `${user} reacted with emoji ${emoji}`)
 
               if (guild.available) {
-                const member = guild.members.get(r.user.id)
+                const member = guild.members.cache.get(r.user.id)
 
                 if (!member) return
 
-                if (member.roles.some((r) => roles.includes(r.name))) {
+                if (member.roles.cache.some((role) => roles.includes(role.name))) {
                   return
                 }
 
-                const role = guild.roles.find((r) => r.name === roles[emojis.indexOf(emoji)])
+                const role = guild.roles.cache.find((role) => role.name === roles[emojis.indexOf(emoji)])
 
-                member.addRole(role).catch(log)
+                member.roles.add(role).catch(log)
               }
             })
             collector.on('end', (c) => log('end', `collected ${c.size} items`))

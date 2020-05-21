@@ -9,6 +9,7 @@ const baseCtx = {
     throw new FilterException(...params)
   },
   onSuccess(...extras) {
+    if (process.env.NODE_ENV !== 'development') return
     extras = extras.filter((v) => v !== undefined)
     if (extras.length) {
       this.log('resolved', ...extras)
@@ -17,6 +18,7 @@ const baseCtx = {
     }
   },
   onError(err) {
+    if (process.env.NODE_ENV !== 'development') return
     this.log('rejected', err)
   }
 }
@@ -25,7 +27,7 @@ exports.getBaseCtx = function (client, meta, extra) {
   const ctx = {
     client,
     meta,
-    guild: client.guilds.get(client.config.guildId),
+    guild: client.guilds.cache.get(client.config.guildId),
     settings: getSettings(client),
     ...extra
   }
