@@ -44,6 +44,8 @@ async function setupRoleMenus({ log, settings, guild }) {
   if (guild.available) {
     log(`setting up role menu for ${guild.name}`)
 
+    const memberRole = guild.roles.cache.get(settings.memberRole)
+
     if (settings.menus) {
       for (const menu of settings.menus) {
         const channel = guild.channels.cache.get(menu.channel)
@@ -86,7 +88,7 @@ async function setupRoleMenus({ log, settings, guild }) {
 
                 const role = guild.roles.cache.find((role) => role.name === roles[emojis.indexOf(emoji)])
 
-                member.roles.add(role).catch(log)
+                member.roles.add([role, memberRole], 'reacted to role menu').catch(log)
               }
             })
             collector.on('end', (c) => log('end', `collected ${c.size} items`))
