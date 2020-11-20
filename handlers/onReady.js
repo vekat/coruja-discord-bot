@@ -43,7 +43,7 @@ async function fetchWebhooks({ client, settings, guild }, next) {
 async function setupRoleMenus({ log, settings, guild }) {
   if (guild.available) {
     log(`setting up role menu for ${guild.name}`)
-
+    await guild.roles.fetch()
     const memberRole = guild.roles.cache.get(settings.memberRole)
 
     if (settings.menus) {
@@ -62,23 +62,17 @@ async function setupRoleMenus({ log, settings, guild }) {
               log('a reaction failed')
             }
 
-            const filter = (r, user) => {
-              if (emojis.includes(r.emoji.name) && !user.bot) {
-                r.user = user
-                return true
-              }
-              return false
-            }
+            const filter = (r, u) => emojis.includes(r.emoji.name) && !u.bot
 
             const collector = message.createReactionCollector(filter)
 
-            collector.on('collect', (r) => {
+            collector.on('collect', async (r, u) => {
               const emoji = r.emoji.name
-              const user = r.user.tag
+              const user = u.tag
               log('collect', `${user} reacted with emoji ${emoji}`)
 
               if (guild.available) {
-                const member = guild.members.cache.get(r.user.id)
+                const member = await guild.members.fetch({ user: u.id, force: true })
 
                 if (!member) return
 
@@ -89,9 +83,9 @@ async function setupRoleMenus({ log, settings, guild }) {
                 const role = guild.roles.cache.find((role) => role.name === roles[emojis.indexOf(emoji)])
 
                 if (!member.roles.cache.has(memberRole.id)) {
-                  member.roles.add([role, memberRole], 'reacted to role menu').catch(log)
+                  member.roles.add([role, memberRole], '1st reaction to role menu').catch(log)
                 } else {
-                  member.roles.add(role, 'reacted to role menu').catch(log)
+                  member.roles.add(role, '2nd reaction to role menu').catch(log)
                 }
               }
             })

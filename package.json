@@ -21,9 +21,9 @@
   },
   "homepage": "https://github.com/vekat/coruja-discord-bot#readme",
   "dependencies": {
-    "better-sqlite3": "^5.4.2",
-    "discord.js": "^12.2.0",
-    "enmap": "^5.1.2",
+    "better-sqlite3": "^5.4.3",
+    "discord.js": "^12.4.1",
+    "enmap": "^5.8.2",
     "foreman": "^3.0.1"
   }
 }

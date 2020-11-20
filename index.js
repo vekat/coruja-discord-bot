@@ -16,7 +16,7 @@ try {
   throw err
 }
 
-const client = new Discord.Client()
+const client = new Discord.Client({ partials: ['GUILD_MEMBER', 'REACTION'] })
 
 client.config = {
   token,
