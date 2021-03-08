@@ -4,17 +4,10 @@ const path = require('path')
 const Discord = require('discord.js')
 const Enmap = require('enmap')
 
+const defaults = require('./settings')
 const { load: loadHandler } = require('./utils/handlers')
 
 const { BOT_TOKEN: token, GUILD_ID: guildId, FOLDER_HANDLERS: handlersFolder } = process.env
-let defaults
-
-try {
-  const raw = fs.readFileSync('settings.json')
-  defaults = JSON.parse(raw)
-} catch (err) {
-  throw err
-}
 
 const client = new Discord.Client({ partials: ['GUILD_MEMBER', 'REACTION'] })
 

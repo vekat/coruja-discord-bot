@@ -41,57 +41,79 @@ async function fetchWebhooks({ client, settings, guild }, next) {
 }
 
 async function setupRoleMenus({ log, settings, guild }) {
-  if (guild.available) {
-    log(`setting up role menu for ${guild.name}`)
+  if (guild.available && settings.menus) {
+    log(`setting up role menus for ${guild.name}`)
+
     await guild.roles.fetch()
-    const memberRole = guild.roles.cache.get(settings.memberRole)
 
-    if (settings.menus) {
-      for (const menu of settings.menus) {
-        const channel = guild.channels.cache.get(menu.channel)
-        const roles = Object.keys(menu.roles)
-        const emojis = Object.values(menu.roles)
+    for (const menu of settings.menus) {
+      const channel = guild.channels.cache.get(menu.channel)
+      const roles = menu.roles
+      const emojis = menu.emojis
 
-        channel.messages.fetch(menu.message)
-          .then(async (message) => {
-            try {
-              for (const emoji of emojis) {
-                await message.react(emoji)
-              }
-            } catch (err) {
-              log('a reaction failed')
-            }
+      const message = await channel.messages.fetch(menu.message)
 
-            const filter = (r, u) => emojis.includes(r.emoji.name) && !u.bot
-
-            const collector = message.createReactionCollector(filter)
-
-            collector.on('collect', async (r, u) => {
-              const emoji = r.emoji.name
-              const user = u.tag
-              log('collect', `${user} reacted with emoji ${emoji}`)
-
-              if (guild.available) {
-                const member = await guild.members.fetch({ user: u.id, force: true })
-
-                if (!member) return
-
-                if (member.roles.cache.some((role) => roles.includes(role.name))) {
-                  return
-                }
-
-                const role = guild.roles.cache.find((role) => role.name === roles[emojis.indexOf(emoji)])
-
-                if (!member.roles.cache.has(memberRole.id)) {
-                  member.roles.add([role, memberRole], '1st reaction to role menu').catch(log)
-                } else {
-                  member.roles.add(role, '2nd reaction to role menu').catch(log)
-                }
-              }
-            })
-            collector.on('end', (c) => log('end', `collected ${c.size} items`))
-          })
+      try {
+        for (const emoji of emojis) {
+          await message.react(emoji)
+        }
+      } catch (err) {
+        log('failed reaction', err.message)
       }
+
+      const filter = (r, u) => !u.bot && emojis.includes(r.emoji.name)
+
+      const collector = message.createReactionCollector(filter)
+
+      collector.on('end', (c) => log('end', `collected ${c.size} items`))
+      collector.on('collect', async (r, u) => {
+        TAG = 'collect'
+        if (!guild.available) return
+
+        const emoji = r.emoji.name
+
+        log(TAG, `${u.tag} reacted to '${menu.name}' with emoji ${emoji}`)
+
+        const member = await guild.members.fetch({ user: u.id, force: true })
+
+        if (!member) return
+
+        if (member.roles.cache.some((role) => roles.includes(role.id))) return
+
+        const reactionRole = guild.roles.cache.get(roles[emojis.indexOf(emoji)])
+
+        if (!reactionRole) return
+
+        for (const required of menu.require) {
+          if (member.roles.cache.some((role) => required.roles.includes(role.id))) continue
+
+          try {
+            const defaultRole = guild.roles.cache.get(required.default)
+            await member.roles.add(defaultRole, `add default role of ${menu.name}`)
+          } catch (err) {
+            log(TAG, err)
+          }
+        }
+
+        for (const removeRoleId of menu.remove) {
+          if (!member.roles.cache.has(removeRoleId)) continue
+
+          try {
+            const removeRole = guild.roles.cache.get(removeRoleId)
+            await member.roles.remove(removeRole, `remove excluding role of ${menu.name}`)
+          } catch (err) {
+            log(TAG, err)
+          }
+        }
+
+        try {
+          await member.roles.add(reactionRole, `add role of ${menu.name}`)
+        } catch (err) {
+          log(TAG, err)
+        }
+      })
+
+      log(`menu '${menu.name}' has been setup`)
     }
   }
 }
