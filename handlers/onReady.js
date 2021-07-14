@@ -78,8 +78,6 @@ async function setupRoleMenus({ log, settings, guild }) {
 
         if (!member) return
 
-        if (member.roles.cache.some((role) => roles.includes(role.id))) return
-
         const reactionRole = guild.roles.cache.get(roles[emojis.indexOf(emoji)])
 
         if (!reactionRole) return
